@@ -1,7 +1,7 @@
+---
 postfix_conf:
   myhostname: "{{ inventory_hostname }}"
-  myorigin: "$mydomain"
-  relayhost: "rhel8-server1.example.com"
-  inet_interfaces: "loopback-only"
+  myorigin: $mydomain
+  relayhost: rhel8-server1.example.com
+  inet_interfaces: loopback-only
   mydestination: ""
-  

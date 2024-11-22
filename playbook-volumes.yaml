@@ -5,49 +5,49 @@
     - storage_vars.yml
 
   tasks:
-  - name: Correct partitions exist on /dev/vdb
-    parted:
-      device: /dev/vdb
-      state: present
-      number: "{{ item.number }}"
-      part_start: "{{ item.start }}"
-      part_end: "{{ item.end }}"
-    loop: "{{ partitions }}"
+    - name: Correct partitions exist on /dev/vdb
+      loop: "{{ partitions }}"
+      community.general.parted:
+        device: /dev/vdb
+        state: present
+        number: "{{ item.number }}"
+        part_start: "{{ item.start }}"
+        part_end: "{{ item.end }}"
 
-  - name: Ensure Volume Groups Exist
-    lvg:
-      vg: "{{ item.name }}"
-      pvs: "{{ item.devices }}"
-    loop: "{{ volume_groups }}"
+    - name: Ensure Volume Groups Exist
+      loop: "{{ volume_groups }}"
+      community.general.lvg:
+        vg: "{{ item.name }}"
+        pvs: "{{ item.devices }}"
 
-  - name: Create each Logical Volume (LV) if needed
-    lvol:
-      vg: "{{ item.vgroup }}"
-      lv: "{{ item.name }}"
-      size: "{{ item.size }}"
-    loop: "{{ logical_volumes }}"
-    when: item.name not in ansible_lvm["lvs"]
+    - name: Create each Logical Volume (LV) if needed
+      loop: "{{ logical_volumes }}"
+      when: item.name not in ansible_lvm["lvs"]
+      community.general.lvol:
+        vg: "{{ item.vgroup }}"
+        lv: "{{ item.name }}"
+        size: "{{ item.size }}"
 
-  - name: Ensure XFS Filesystem exists on each LV
-    filesystem:
-      dev: "/dev/{{ item.vgroup }}/{{ item.name }}"
-      fstype: xfs
-    loop: "{{ logical_volumes }}"
+    - name: Ensure XFS Filesystem exists on each LV
+      loop: "{{ logical_volumes }}"
+      community.general.filesystem:
+        dev: /dev/{{ item.vgroup }}/{{ item.name }}
+        fstype: xfs
 
-  - name: Ensure the correct capacity for each LV
-    lvol:
-      vg: "{{ item.vgroup }}"
-      lv: "{{ item.name }}"
-      size: "{{ item.size }}"
-      resizefs: yes
-      force: yes
-    loop: "{{ logical_volumes }}"
+    - name: Ensure the correct capacity for each LV
+      loop: "{{ logical_volumes }}"
+      community.general.lvol:
+        vg: "{{ item.vgroup }}"
+        lv: "{{ item.name }}"
+        size: "{{ item.size }}"
+        resizefs: true
+        force: true
 
-  - name: Each Logical Volume is mounted
-    mount:
-      path: "{{ item.mount_path }}"
-      src: "/dev/{{ item.vgroup }}/{{ item.name }}"
-      fstype: xfs
-      opts: noatime
-      state: mounted
-    loop: "{{ logical_volumes }}"
+    - name: Each Logical Volume is mounted
+      loop: "{{ logical_volumes }}"
+      ansible.posix.mount:
+        path: "{{ item.mount_path }}"
+        src: /dev/{{ item.vgroup }}/{{ item.name }}
+        fstype: xfs
+        opts: noatime
+        state: mounted

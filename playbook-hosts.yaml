@@ -1,17 +1,17 @@
 ---
-- name: ensure /etc/hosts is up to date 
+- name: ensure /etc/hosts is up to date
   hosts: all
   remote_user: automation
-  become: yes
+  become: true
 
   tasks:
     - name: server.example.com in /etc/hosts
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: /etc/hosts
-        line: '192.0.2.42 server.example.com server'
+        line: 192.0.2.42 server.example.com server
         state: present
 
     - name: Alternatively with jinja2 templates
-      template:
+      ansible.builtin.template:
         src: templates/hosts.j2
         dest: /etc/hosts

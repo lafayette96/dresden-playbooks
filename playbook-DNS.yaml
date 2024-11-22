@@ -1,37 +1,34 @@
 ---
 - hosts: all
   tasks:
-
   # to be able to manage the file /etc/resolv.conf with Ansible, I first had to stop the NetworkManager from doing so.
-  - name: make sure line 'dns=none' is set in /etc/NetworkManager/NetworkManager.conf
-    ini_file:
-      path: /etc/NetworkManager/NetworkManager.conf
-      state: present
-      no_extra_spaces: yes
-      section: main
-      option: dns
-      value: none
-      owner: root
-      group: root
-      mode: 0644
-      backup: yes 
-    notify:
-      - reload NetworkManager
+    - name: make sure line 'dns=none' is set in /etc/NetworkManager/NetworkManager.conf
+      notify:
+        - reload NetworkManager
+      community.general.ini_file:
+        path: /etc/NetworkManager/NetworkManager.conf
+        state: present
+        no_extra_spaces: true
+        section: main
+        option: dns
+        value: none
+        owner: root
+        group: root
+        mode: 420
+        backup: true
 
-  # create target configuration from resolv.conf.j2 and place it on target node
-  - name: deploy resolv.conf template
-    template:
-      src: roles/resolv.conf/templates/resolv.conf.j2
-      dest: /etc/resolv.conf
-      owner: root
-      group: root
-      mode: 0644
-      backup: yes
-    notify:
-      - reload NetworkManager
+    - name: deploy resolv.conf template
+      notify:
+        - reload NetworkManager
+      ansible.builtin.template:
+        src: roles/resolv.conf/templates/resolv.conf.j2
+        dest: /etc/resolv.conf
+        owner: root
+        group: root
+        mode: 420
+        backup: true
 
-  # is this is part of Ansible role (reusable directory structure), it can be only run when canges to network managed are done
-  - name: reload NetworkManager
-    service:
-      name: NetworkManager
-      state: reloaded
+    - name: reload NetworkManager
+      ansible.builtin.service:
+        name: NetworkManager
+        state: reloaded
