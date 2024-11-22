@@ -1,0 +1,16 @@
+---
+- name: NIC configuration
+  hosts: all
+  vars:
+    network_connections:
+      - name: ens4
+        type: ethernet
+        ip:
+          address:
+            - 172.25.250.30/24
+
+  roles:
+    - rhel-system-roles.network
+
+# ansible-glaxy list
+# https://galaxy.ansible.com/ui/standalone/roles/linux-system-roles/network/documentation/

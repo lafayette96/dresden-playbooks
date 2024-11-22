@@ -1,0 +1,44 @@
+#  Zeitserver (ntp)   
+# - DNS-Server
+# - /etc/hosts
+# - VLAN anlegen und konfigurieren (IP Adresse und diverse Parameter setzen)
+# - MTU und "DHCP aus"
+# - System und Admin-Nutzer anlegen (incl. UID(GID Vorgaben)
+# - Systemumgebung Adminnutzer (Prompt...)
+# - Anlegen Volumegroups, Logical Volumes, Filesysteme, Mounts ....
+# - /etc/multipath.conf um die notwendigen Device Typen (2145) ergänzen
+# - Config des SSHD
+
+# Installation diverser Softwarepakete und ggfs. Anpassung der Konfiguration
+# - IBM Power Tools
+# - postfix
+# - LPAR2RRD
+# - SAP-TuningPaket
+
+
+---
+- name: Configure ungeliebten, stupiden und wiederkehrenden tasks
+  hosts: servera.lab.example.com
+  tasks:
+    - name: Install and configure chrony 
+      ansible.builtin.import_playbook: playbook-ntp.yaml
+
+    - name: Configure DNS server
+      ansible.builtin.import_playbook: playbook-DNS.yaml
+
+    - name: Configure DNS server
+      ansible.builtin.import_playbook: playbook-hosts.yaml
+
+    - name: Configure DNS server
+      ansible.builtin.import_playbook: playbook-VLAN.yaml
+    
+    - name: Configure DNS server
+      ansible.builtin.import_playbook: playbook-mtu.yaml
+
+    - name: Configure DNS server
+      ansible.builtin.import_playbook: playbook-users.yaml
+
+    
+  
+
+  
