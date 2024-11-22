@@ -20,7 +20,7 @@
 - name: Configure ungeliebten, stupiden und wiederkehrenden tasks
   hosts: servera.lab.example.com
   tasks:
-    - name: Install and configure chrony 
+    - name: Install and configure chrony
       ansible.builtin.import_playbook: playbook-ntp.yaml
 
     - name: Configure DNS server
@@ -31,14 +31,9 @@
 
     - name: Configure DNS server
       ansible.builtin.import_playbook: playbook-VLAN.yaml
-    
+
     - name: Configure DNS server
       ansible.builtin.import_playbook: playbook-mtu.yaml
 
     - name: Configure DNS server
       ansible.builtin.import_playbook: playbook-users.yaml
-
-    
-  
-
-  

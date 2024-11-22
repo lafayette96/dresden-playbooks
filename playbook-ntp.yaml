@@ -1,24 +1,24 @@
 ---
-- hosts: all 
+- hosts: all
   tasks:
-  - name: Make sure chronyd is installed 
-    ansible.builtin.yum:
-     name: chrony
-     state: latest
-     update_cache: yes 
+    - name: Make sure chronyd is installed
+      ansible.builtin.yum:
+        name: chrony
+        state: latest
+        update_cache: true
 
-  - name: Deploy chrony.conf template 
-    ansible.builtin.template:
-     src: /some/full/path/chrony.conf.j2
-     dest: /etc/chrony.conf
-     owner: root
-     group: root 
-     mode: 0644 
-     backup: yes 
+    - name: Deploy chrony.conf template
+      ansible.builtin.template:
+        src: /some/full/path/chrony.conf.j2
+        dest: /etc/chrony.conf
+        owner: root
+        group: root
+        mode: "0644"
+        backup: true
 
-  - name: Restart chronyd 
-    ansible.builtin.service:
-      name: chronyd 
-      state: restarted
+    - name: Restart chronyd
+      ansible.builtin.service:
+        name: chronyd
+        state: restarted
 
 # cat /etc/chrony.conf 
